@@ -4,4 +4,4 @@
 - RTL_XOR drives sum, RTL_AND drives carry — as expected
 - Testbench pending; will add after covering it in class
 
-![Half Adder Schematic](half_adder_schematic.png)
+![Half Adder Schematic](01_half_adder/half_adder_schematic.png)
