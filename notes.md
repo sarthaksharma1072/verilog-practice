@@ -21,3 +21,22 @@
 - Compared the schematic with the flat gate version — same logic, but this one shows two half_adder blocks instead of individual gates, which is how hierarchy appears in RTL
 
 ![Full Adder using Half Adders Schematic](03_fulladder_halfadder/fulladder_halfadder_schematic.png)
+
+## Half Subtractor — 13 Aug 2026
+- Difference uses the same XOR as the half adder's sum, since a XOR b is identical for both operations
+- Borrow needed an inverter: borrow = (NOT a) AND b, whereas the half adder's carry was simply a AND b
+- Declared wire w1 to carry the inverted a signal from the NOT gate into the AND gate
+- Verified the elaborated schematic in Vivado
+
+![Half Subtractor Schematic](04_subtractors/half_subtractor_schematic.png)
+
+## Full Subtractor — 13 Aug 2026
+- Wrote this one without referring to a solution — derived the gate structure from the circuit diagram
+- Difference chains two XORs: x1 gives a XOR b, then x2 combines that with bin
+- Borrow needs two AND terms, each with an inverted input, combined by an OR
+- Used five wires: w1 branches to both x2 and n1, which is a single net driving two loads rather than two separate signals
+- Vivado's elaborated schematic showed only five cells — it absorbed both NOT gates into the AND inputs as inversion bubbles, an optimisation that keeps the logic identical
+
+![Full Subtractor Schematic](04_subtractors/full_subtractor_schematic.png)
+
+
