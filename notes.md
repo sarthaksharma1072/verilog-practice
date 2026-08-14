@@ -39,4 +39,14 @@
 
 ![Full Subtractor Schematic](04_subtractors/full_subtractor_schematic.png)
 
+## 4-bit Ripple Carry Adder — 14 Aug 2026
+- Reused the existing full_adder module by instantiating it four times instead of writing four separate modules
+- First use of vector ports: [3:0] declares a four-bit bus, and individual bits are accessed as a_rca[0], a_rca[1] and so on
+- Chained the carry through internal wires w0, w1, w2 — each stage's carry output becomes the next stage's cin, which is where the "ripple" name comes from
+- Only the first stage's cin and the last stage's carry connect to ports; everything in between needs internal wires
+- Hit a bug where the vector width carried over to the next port in the list, making cin_rca and cout_rca four bits wide — spotted it in the schematic from the [3:0] labels and a ground symbol on the unconnected bits. Fixed by declaring each port with its own direction keyword and width
+- Learned to verify a schematic by checking port widths, cell count, and looking for unconnected or grounded nets
+
+![Ripple Carry Adder Schematic](05_ripple_carry_adder/ripple_carry_adder_schematic.png)
+
 
