@@ -50,12 +50,33 @@
 ![Ripple Carry Adder Schematic](05_ripple_carry_adder/ripple_carry_adder_schematic.png)
 
 ## BCD Adder — 15 Aug 2026
-- Built a single-digit BCD adder by instantiating the ripple_carry_adder module twice
-- rca1 performs plain binary addition of a_bcd and b_bcd; its result is held in sum_temp
-- Detection logic checks two conditions: whether the binary sum exceeds 9, or whether rca1 produced a carry (which happens above 15)
-- The two AND gates catch sums 10-15 by their bit patterns, while cout_temp catches 16-18
-- rca2 adds the correction value — the OR gate output is wired into bit 2 and bit 1 of its b input, which produces 0110 when correction is needed and 0000 otherwise
-- Learned that a single wire can drive multiple loads: the OR gate output serves as both the final carry and the correction control
-- In progress — schematic verification pending
+Built a single-digit BCD adder by instantiating the ripple carry adder module twice, with detection logic in between.
 
+**How it works**
+- rca1 performs plain binary addition of a_bcd and b_bcd, producing sum_temp and cout_temp
+- Detection logic decides whether the result is a valid BCD digit (0 to 9) or needs correcting
+- rca2 adds 6 when correction is needed, or 0 when it is not
+- Maximum possible input is 9 + 9 + carry = 19, so the design must handle results from 0 to 19
 
+**Detection logic — two separate conditions**
+- Sums 10 to 15 are caught by their bit patterns: sum_temp[3] AND sum_temp[2], or sum_temp[3] AND sum_temp[1]
+- Sums 16 to 19 overflow the 4-bit output, so their binary sum reads as 0 to 3 and the AND gates miss them entirely; cout_temp catches these
+- All three conditions feed one OR gate
+
+**The correction value trick**
+- 6 in binary is 0110 and 0 is 0000, so bit 3 and bit 0 are always zero while bit 2 and bit 1 exactly track the correction signal
+- Wiring the OR gate output into bit 2 and bit 1 produces 0110 or 0000 automatically, with no multiplexer needed
+
+**Mistakes I made and fixed**
+- Left cout_temp out of the OR gate at first — this silently breaks every case from 16 to 19. Traced it with 8 + 9: the binary sum is 17, sum_temp reads 0001 and the AND gates both output 0, so no correction fired and the answer came out as 1 instead of 17
+- Connected the final carry to rca2's cout instead of the OR gate output. The BCD carry is the correction signal itself, not the second adder's carry — rca2's cout is left unconnected
+- Wrote the instance name as ripple_carry_adder when the module is actually named Ripple_carryadder; Verilog is case-sensitive, so the mismatch failed elaboration
+- Tried indexing 4-bit signals when connecting to 4-bit ports (a_rca[0] instead of a_rca). Indexing is only needed when the port is narrower than the signal, as when a 1-bit full adder port takes one bit of a 4-bit bus
+
+**Doubts I worked through**
+- Why sum_bcd is an output when the inner adders also have sums: each module has its own boundary, and only signals crossing the bcd_adder boundary are ports. The first adder's sum stays inside as a wire
+- Why b_bcd does not appear in the second adder: its job finishes in rca1. The second adder's b input carries the correction value, not the original operand
+- Why one wire can serve two purposes: the OR gate output is both the final carry and the correction control, because the condition for a BCD carry and the condition for correction are identical
+- When to use assign versus gate instantiation: assign for constants, wire-to-wire connections and expressions; gate instantiation when a specific gate primitive is wanted
+
+![BCD Adder Schematic](06_bcd_adder/bcd_adder_schematic.png)
