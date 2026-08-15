@@ -49,4 +49,13 @@
 
 ![Ripple Carry Adder Schematic](05_ripple_carry_adder/ripple_carry_adder_schematic.png)
 
+## BCD Adder — 15 Aug 2026
+- Built a single-digit BCD adder by instantiating the ripple_carry_adder module twice
+- rca1 performs plain binary addition of a_bcd and b_bcd; its result is held in sum_temp
+- Detection logic checks two conditions: whether the binary sum exceeds 9, or whether rca1 produced a carry (which happens above 15)
+- The two AND gates catch sums 10-15 by their bit patterns, while cout_temp catches 16-18
+- rca2 adds the correction value — the OR gate output is wired into bit 2 and bit 1 of its b input, which produces 0110 when correction is needed and 0000 otherwise
+- Learned that a single wire can drive multiple loads: the OR gate output serves as both the final carry and the correction control
+- In progress — schematic verification pending
+
 
