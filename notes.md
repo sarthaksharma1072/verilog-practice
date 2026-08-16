@@ -79,4 +79,24 @@ Built a single-digit BCD adder by instantiating the ripple carry adder module tw
 - Why one wire can serve two purposes: the OR gate output is both the final carry and the correction control, because the condition for a BCD carry and the condition for correction are identical
 - When to use assign versus gate instantiation: assign for constants, wire-to-wire connections and expressions; gate instantiation when a specific gate primitive is wanted
 
-![BCD Adder Schematic](06_bcd_adder/bcd_adder_schematic.png)
+![BCD Adder Schematic](06_bcd_adder/bcd_adder_schematic.png
+
+
+## 2-bit Comparator — 16 Aug 2026
+Built a 2-bit magnitude comparator with three outputs, derived directly from the truth table rather than from a reference design.
+
+**Structure**
+- Sixteen input combinations across a[1:0] and b[1:0], grouped into three outputs
+- Greater-than and less-than each need three product terms; equality needs four, one for each matching pair
+- Four inverters supply the complements of both operands' bits
+
+**Mistakes I made and fixed**
+- All four inverters were driven from operand a, with none generating b's complements, even though the product terms below assumed nt[2] and nt[3] were b's inverses. This single error corrupted every term that referenced them
+- Two AND gates were given the same output net name, so the second product term for greater-than had nowhere to go
+- One equality term used b[0] where its complement belonged, so the 00 = 00 case never asserted
+
+**What I learned**
+- Vivado splits multi-input gate primitives into two-input cells during elaboration, so the schematic showed thirty-one cells for seventeen gates written in source. Cell count alone is not a way to verify a design
+- Reading a hand-drawn gate diagram is error-prone; deriving terms from the truth table directly is more reliable and easier to check
+
+![2-bit Comparator Schematic](07_comparator/bit2_comparator_schematic.png)
