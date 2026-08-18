@@ -100,3 +100,16 @@ Built a 2-bit magnitude comparator with three outputs, derived directly from the
 - Reading a hand-drawn gate diagram is error-prone; deriving terms from the truth table directly is more reliable and easier to check
 
 ![2-bit Comparator Schematic](07_comparator/bit2_comparator_schematic.png)
+
+
+## 4:1 Multiplexer — 18 Aug 2026
+
+- Built using gate primitives (NOT, AND, OR) as flat SOP from the truth table
+- Four product terms, one per select code, summed by a single OR gate
+- Elaborated in Vivado and verified the schematic — 11 cells, 7 I/O ports
+- Inverters absorbed as bubbles on the AND inputs, so no separate NOT cells appear
+- One AND gate was initially written with two inputs instead of three, dropping a select condition. It elaborated cleanly and the schematic looked fine — only s = 11 would have exposed it
+- Check for any 2ⁿ:1 mux: every AND gate must have exactly n+1 inputs
+- Testbench pending; will add after covering it in class
+
+![4:1 Multiplexer Schematic](08_mux_4to1/four_1_mux_schematic.png)
